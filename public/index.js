@@ -96,7 +96,14 @@ const displayChart = async (date, startTime, endTime) => {
   };
 
   chart = LightweightCharts.createChart(domElement, chartProperties);
-  const candleseries = chart.addCandlestickSeries();
+  const candleseries = chart.addCandlestickSeries({
+    upColor: '#59ad4c', // Green color for up (bullish) candles
+    downColor: '#000000', // Red color for down (bearish) candles
+    borderUpColor: '#000000',
+    borderDownColor: '#000000',
+    wickUpColor: '#000000',
+    wickDownColor: '#000000',
+  });
   const klinedata = await getData(date);
   const filteredData = filterDataByDateTimeRange(klinedata, date, startTime, endTime);
   
