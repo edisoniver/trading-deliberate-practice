@@ -3,6 +3,25 @@
 let chart;
 let candleseries;
 
+function setDefaultDateTimeValues() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const defaultDate = `${yyyy}-${mm}-${dd}`;
+
+  const defaultStartTime = '09:00';
+  const defaultEndTime = '17:00';
+
+  document.getElementById('dateInput').value = defaultDate;
+  document.getElementById('startTimeInput').value = defaultStartTime;
+  document.getElementById('endTimeInput').value = defaultEndTime;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setDefaultDateTimeValues();
+});
+
 const getData = async (date) => {
   const response = await fetch(`/updateddata/${date}.json`);
   if (!response.ok) {
@@ -80,6 +99,7 @@ const displayChart = async (date, startTime, endTime) => {
   const candleseries = chart.addCandlestickSeries();
   const klinedata = await getData(date);
   const filteredData = filterDataByDateTimeRange(klinedata, date, startTime, endTime);
+  
 
   // Adjust the time property in the filtered data
   const adjustedData = filteredData.map(item => ({
@@ -89,10 +109,39 @@ const displayChart = async (date, startTime, endTime) => {
 
   const legend = createLegend(chart);
   subscribeCrosshairMove(chart, candleseries, legend);
-
+  
   candleseries.setData(adjustedData);
   return candleseries;
 };
+
+// Add this code to your JavaScript, after the "displayChart" function and before the "updateChart" function
+
+// Function to add a custom price line
+function addCustomPriceLine(price, label) {
+  const customPriceLine = candleseries.createPriceLine({
+    price: price,
+    color: '#ef5350',
+    lineWidth: 2,
+    lineStyle: 2, // LineStyle.Dashed
+    axisLabelVisible: true,
+    title: label || `${price}`,
+  });
+}
+
+// Event listener for the Add Custom Price Line button
+document.getElementById('addCustomPriceLine').addEventListener('click', () => {
+  const customPriceInput = document.getElementById('customPriceInput').value;
+  const customPriceLabel = document.getElementById('customPriceLabel').value;
+  const customPrice = parseFloat(customPriceInput);
+
+  if (isNaN(customPrice)) {
+    alert('Please enter a valid price value');
+    return;
+  }
+
+  addCustomPriceLine(customPrice, customPriceLabel);
+});
+
 
 const updateChart = async () => {
   const selectedDate = document.getElementById('dateInput').value;
@@ -175,6 +224,29 @@ const shiftChartTime = async (shiftAmount, unit) => {
     updateChart();
   }
 };
+
+function adjustTime(minutes) {
+  const endTimeInput = document.getElementById('endTimeInput');
+  const endTime = endTimeInput.valueAsDate || new Date(endTimeInput.value);
+
+  if (!endTime) return;
+
+  endTime.setMinutes(endTime.getMinutes() + minutes);
+  endTimeInput.value = endTime.toISOString().slice(11, 19);
+}
+
+// Handle click events for -1m and +1m buttons
+document.getElementById('back1m').addEventListener('click', () => {
+  adjustTime(-1);
+  updateChart();
+});
+
+document.getElementById('forward1m').addEventListener('click', () => {
+  adjustTime(1);
+  updateChart();
+});
+
+
 
 // Event listeners
 document.getElementById('updateChart').addEventListener('click', updateChart);
