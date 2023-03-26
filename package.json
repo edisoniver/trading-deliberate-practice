@@ -1,0 +1,25 @@
+{
+  "name": "trading-deliberate-practice",
+  "version": "1.0.0",
+  "description": "Trading your eyes in killzones.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edisoniver/trading-deliberate-practice.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edisoniver/trading-deliberate-practice/issues"
+  },
+  "homepage": "https://github.com/edisoniver/trading-deliberate-practice#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "papaparse": "^5.4.1"
+  }
+}
