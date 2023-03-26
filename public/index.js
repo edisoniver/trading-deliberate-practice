@@ -62,14 +62,15 @@ const displayChart = async (date, startTime, endTime) => {
       timeVisible: true,
     },
     crosshair: {
-      visible: true,
+      visible: true, 
+      mode: LightweightCharts.CrosshairMode.Normal,
       vertLine: {
-        color: 'rgba(70, 130, 180, 0.5)',
+        color: 'rgba(92, 70, 180, 1)',
         width: 0.5,
         style: 0,
       },
       horzLine: {
-        color: 'rgba(70, 130, 180, 0.5)',
+        color: 'rgba(92, 70, 180, 1)',
         width: 0.5,
         style: 0,
       },
