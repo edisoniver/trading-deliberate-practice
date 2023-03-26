@@ -170,7 +170,14 @@ const updateChart = async () => {
     chart.removeSeries(candleseries);
   }
 
-  candleseries = chart.addCandlestickSeries(); // Add a new candlestick series
+  candleseries = chart.addCandlestickSeries({
+    upColor: '#59ad4c', // Green color for up (bullish) candles
+    downColor: '#000000', // Red color for down (bearish) candles
+    borderUpColor: '#000000',
+    borderDownColor: '#000000',
+    wickUpColor: '#000000',
+    wickDownColor: '#000000',
+  }); // Add a new candlestick series
 
   // Adjust the time property in the filtered data
   const adjustedData = filteredData.map(item => ({
