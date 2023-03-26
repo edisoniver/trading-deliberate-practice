@@ -1,37 +1,56 @@
+import Papa from 'papaparse';
+
+
 let chart;
+let candleseries;
 
 const getData = async () => {
-  const res = await fetch('ES_full_1min_continuous_UNadjusted.csv');
-  const resp = await res.text();
-  const cdata = resp.split('\n').filter(row => row.trim() !== '').map((row) => {
-    const [dateTime, open, high, low, close, volume] = row.split(',');
+  return new Promise((resolve, reject) => {
+    const cdata = [];
 
-    if (!dateTime) {
-      return null;
-    }
+    Papa.parse('ES_full_1min_continuous_UNadjusted.csv', {
+      download: true,
+      step: function (row, parser) {
+        if (row.errors.length === 0) {
+          const [dateTime, open, high, low, close, volume] = row.data;
 
-    let parsedTime;
-    if (dateTime.includes(' ')) { // First dataset format
-      const [date, time] = dateTime.split(' ');
-      const isoDateTime = `${date}T${time}`;
-      parsedTime = new Date(isoDateTime).getTime() / 1000;
-    } else { // Second dataset format
-      const [date, time] = dateTime.split(', ');
-      const adjustedTime = time.includes('AM') || time.includes('PM') ? time : `${time} UTC`;
-      parsedTime = new Date(`${date} ${adjustedTime}`).getTime() / 1000;
-    }
+          if (!dateTime) {
+            return;
+          }
 
-    return {
-      time: parsedTime,
-      open: parseFloat(open),
-      high: parseFloat(high),
-      low: parseFloat(low),
-      close: parseFloat(close),
-      volume: parseFloat(volume),
-    };
-  }).filter(data => data !== null);
+          let parsedTime;
+          if (dateTime.includes(' ')) { // First dataset format
+            const [date, time] = dateTime.split(' ');
+            const isoDateTime = `${date}T${time}`;
+            parsedTime = new Date(isoDateTime).getTime() / 1000;
+          } else { // Second dataset format
+            const [date, time] = dateTime.split(', ');
+            const adjustedTime = time.includes('AM') || time.includes('PM') ? time : `${time} UTC`;
+            parsedTime = new Date(`${date} ${adjustedTime}`).getTime() / 1000;
+          }
 
-  return cdata;
+          const data = {
+            time: parsedTime,
+            open: parseFloat(open),
+            high: parseFloat(high),
+            low: parseFloat(low),
+            close: parseFloat(close),
+            volume: parseFloat(volume),
+          };
+          cdata.push(data);
+        } else {
+          // Handle errors or stop parsing if needed
+          // parser.abort();
+        }
+      },
+      complete: function () {
+        resolve(cdata);
+      },
+      error: function (err) {
+        reject(err);
+      },
+    });
+  });
 };
 
 
