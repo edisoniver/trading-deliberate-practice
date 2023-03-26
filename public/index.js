@@ -9,7 +9,6 @@ const getData = async (date) => {
     throw new Error('Error loading data');
   }
   const data = await response.json();
-  console.log(data)
   return data;
 };
 
