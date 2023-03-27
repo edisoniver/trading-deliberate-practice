@@ -184,11 +184,14 @@ const updateChart = async () => {
     alert('Please select a date and time range');
     return;
   }
+  
 
+
+  
   const klinedata = await getData(selectedDate);
   const filteredData = filterDataByDateTimeRange(klinedata, selectedDate, selectedStartTime, selectedEndTime);
   if (filteredData.length === 0) {
-    alert('No data found for the selected date and time range');
+    alert('No data found for weekends :)');
     return;
   }
 

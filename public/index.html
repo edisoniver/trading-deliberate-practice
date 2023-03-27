@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/stylesheet.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ICT Training Practice</title>
     <!-- Add Bootstrap CSS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -45,72 +45,62 @@
         </div>
     </nav>
 
-    <!-- Chart container -->
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div id="tvchart"></div>
-            </div>
-        </div>
-        <!-- Buttons -->
-        <div class="row justify-content-center mt-3">
-            <div class="col-auto">
-                <button type="button" id="back1d" class="btn btn-secondary">-1d</button>
-            </div>
-            <div class="col-auto">
-                <button type="button" id="forward1d" class="btn btn-secondary">+1d</button>
-            </div>
-            <div class="col-auto">
-                <button type="button" id="back1m" class="btn btn-secondary">-1m</button>
-            </div>
-            <div class="col-auto">
-                <button type="button" id="forward1m" class="btn btn-secondary">+1m</button>
-            </div>
-            <div class="col-auto">
-                <button type ="button" id="startButton" class="btn btn-info">Start</button>
-            </div>
-            <div class="col-auto">
-                <button type="button" id="stopButton" class="btn btn-danger">Stop</button>
-            </div>
-
-        </div>
-
-
-        <!-- Date input and button -->
-        <!-- Add the start and end time input fields below the date input field -->
-        <div class="row justify-content-center mt-3">
-            <div class="col-auto">
-                <input type="date" id="dateInput" class="form-control">
-            </div>
-            <div class="col-auto">
-                <input type="time" id="startTimeInput" class="form-control" placeholder="Start Time" step="3600">
-            </div>
-            <div class="col-auto">
-                <input type="time" id="endTimeInput" class="form-control" placeholder="End Time" step="3600">
-            </div>
-            <div class="col-auto">
-                <button type="button" id="updateChart" class="btn btn-info">Update Chart</button>
-            </div>
-            <!-- Add this code to your HTML where you want the form fields and button to appear -->
-
-            <div id="container" class="row justify-content-center mt-3">
-                <div class="col-auto">
-                    <label for="customPriceInput"></label>
-                    <input type="number" id="customPriceInput" name="customPriceInput" placeholder="Enter Price">
+<!-- Chart container -->
+<div class="container-fluid">
+    <div class="col text-center">
+        <div id="tvchart"></div>
+        <div class="row container-lg justify-content-center text-center">
+            <div class="col-12 text-center">
+                <div class="btn-group justify-content-center text-center" role="group"
+                    aria-label="Basic mixed styles example">
+                    <button type="button" id="back1d" class="btn btn-primary">-1d</button>
+                    <button type="button" id="forward1d" class="btn btn-primary">+1d</button>
+                    <button type="button" id="back1m" class="btn btn-primary">-1m</button>
+                    <button type="button" id="forward1m" class="btn btn-primary">+1m</button>
+                    <button type="button" id="updateChart" class="btn btn-info">🔄</button>
                 </div>
-                <div class="col-auto">
-                    <input type="text" id="customPriceLabel" placeholder="Enter label">
-                </div>
-                <div class="col-auto">
-                    <button id="addCustomPriceLine">Add Line</button>
+                <div class="btn-group justify-content-center text-center" role="group"
+                    aria-label="Basic mixed styles example">
+                    <button type="button" id="stopButton" class="btn btn-danger">🛑</button>
+                    <button type="button" id="startButton" class="btn btn-success">✅</button>
                 </div>
             </div>
-            
-
-
-
-
         </div>
+        <div class="row mb-4"></div>
+        <div class="container">
+            <div class="row">
+              <!-- First column for date, start time, and end time fields -->
+              <div class="col-6 col-md-6 text-center">
+                <div class="form-group">
+                  <input type="date" id="dateInput" class="form-control">
+                </div>
+                <div class="form-group">
+                  <input type="time" id="startTimeInput" class="form-control" placeholder="Start Time" step="3600">
+                </div>
+                <div class="form-group">
+                  <input type="time" id="endTimeInput" class="form-control" placeholder="End Time" step="3600">
+                </div>
+              </div>
+          
+              <!-- Second column for custom price line -->
+              <div class="col-6 col-md-6 text-center">
+                <div class="form-group">
+                  <label for="customPriceInput"></label>
+                  <input class="form-control-sm" type="number" id="customPriceInput" name="customPriceInput" placeholder="Enter Price" size="10">
+                </div>
+                <div class="form-group">
+                  <input class="form-control-sm" type="text" id="customPriceLabel" placeholder="Enter label">
+                </div>
+                <div class="form-group">
+                  <button id="addCustomPriceLine" class="btn btn-outline-secondary">Add Line</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
 
     </div>
     </div>
