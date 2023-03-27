@@ -2,6 +2,10 @@
 
 let chart;
 let candleseries;
+let customPrice = null;
+let customPrices = [];
+const cache = new Map();
+
 
 function setDefaultDateTimeValues() {
   const today = new Date();
@@ -23,11 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const getData = async (date) => {
+  if (cache.has(date)) {
+    return cache.get(date);
+  }
   const response = await fetch(`/updateddata/${date}.json`);
   if (!response.ok) {
     throw new Error('Error loading data');
   }
   const data = await response.json();
+  cache.set(date, data);
   return data;
 };
 
@@ -68,6 +76,20 @@ function adjustTimestampToNewYorkTime(timestamp) {
   return adjustedTimestamp;
 }
 
+function formatDateTimeToNewYork(timestamp) {
+  const date = new Date(timestamp * 1000);
+  const newYorkTimeZone = 'America/New_York';
+  const formattedDateTime = Intl.DateTimeFormat('en-US', {
+    timeZone: newYorkTimeZone,
+    year: '2-digit',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date);
+  return formattedDateTime;
+}
 
 
 
@@ -96,6 +118,7 @@ const displayChart = async (date, startTime, endTime) => {
   };
 
   chart = LightweightCharts.createChart(domElement, chartProperties);
+  
   const candleseries = chart.addCandlestickSeries({
     upColor: '#59ad4c', // Green color for up (bullish) candles
     downColor: '#000000', // Red color for down (bearish) candles
@@ -125,15 +148,18 @@ const displayChart = async (date, startTime, endTime) => {
 
 // Function to add a custom price line
 function addCustomPriceLine(price, label) {
-  const customPriceLine = candleseries.createPriceLine({
+  const customPriceLineObj = candleseries.createPriceLine({
     price: price,
-    color: '#ef5350',
+    color: '#00008b',
     lineWidth: 2,
-    lineStyle: 2, // LineStyle.Dashed
+    lineStyle: 1, // LineStyle.Dashed
     axisLabelVisible: true,
     title: label || `${price}`,
   });
+
+  customPrices.push(customPriceLineObj);
 }
+
 
 // Event listener for the Add Custom Price Line button
 document.getElementById('addCustomPriceLine').addEventListener('click', () => {
@@ -184,9 +210,36 @@ const updateChart = async () => {
     ...item,
     time: adjustTimestampToNewYorkTime(item.time),
   }));
-
+  
   candleseries.setData(adjustedData);
+  updateCustomPriceLines();
+
 };
+
+function updateCustomPriceLines() {
+  customPrices.forEach(customPriceLineObj => {
+    // Remove the existing price line from the old candlestick series
+    candleseries.removePriceLine(customPriceLineObj);
+
+    const price = customPriceLineObj.options().price;
+    const label = customPriceLineObj.options().title;
+
+    // Create a new price line for the new candlestick series
+    const newCustomPriceLineObj = candleseries.createPriceLine({
+      price: price,
+      color: '#00008b',
+      lineWidth: 2,
+      lineStyle: 1, // LineStyle.Dashed
+      axisLabelVisible: true,
+      title: label,
+    });
+
+    // Replace the old price line object with the new one in the customPrices array
+    const index = customPrices.indexOf(customPriceLineObj);
+    customPrices[index] = newCustomPriceLineObj;
+  });
+}
+
 
 function createLegend(chart) {
   const legend = document.createElement('div');
@@ -260,6 +313,23 @@ document.getElementById('forward1m').addEventListener('click', () => {
   updateChart();
 });
 
+let timer = null;
+
+document.getElementById('startButton').addEventListener('click', () => {
+  if (timer === null) {
+    timer = setInterval(() => {
+      adjustTime(1);
+      updateChart();
+    }, 1000);
+  }
+});
+
+document.getElementById('stopButton').addEventListener('click', () => {
+  if (timer !== null) {
+    clearInterval(timer);
+    timer = null;
+  }
+});
 
 
 // Event listeners
