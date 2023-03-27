@@ -111,10 +111,8 @@ const updateChart = async () => {
     return;
   }
 
-  // Update the data in the existing candlestick series
-  candleseries.setData(filteredData);
+  candleseries.setData(filteredData); // Update the data of the existing candlestick series
 };
-
 
 
 
