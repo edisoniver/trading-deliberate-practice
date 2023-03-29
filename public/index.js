@@ -15,7 +15,7 @@ function setDefaultDateTimeValues() {
   const defaultDate = `${yyyy}-${mm}-${dd}`;
 
   const defaultStartTime = '09:00';
-  const defaultEndTime = '17:00';
+  const defaultEndTime = '11:00';
 
   document.getElementById('dateInput').value = defaultDate;
   document.getElementById('startTimeInput').value = defaultStartTime;
@@ -119,7 +119,7 @@ const displayChart = async (date, startTime, endTime) => {
 
   chart = LightweightCharts.createChart(domElement, chartProperties);
   
-  const candleseries = chart.addCandlestickSeries({
+  candleseries = chart.addCandlestickSeries({
     upColor: '#59ad4c', // Green color for up (bullish) candles
     downColor: '#000000', // Red color for down (bearish) candles
     borderUpColor: '#000000',
@@ -290,10 +290,19 @@ const shiftChartTime = async (shiftAmount, unit) => {
   } else if (unit === 'd') {
     const currentDate = new Date(dateInput.value);
     currentDate.setDate(currentDate.getDate() + shiftAmount);
+
+    // Check if the new date is a weekend
+    if (currentDate.getDay() === 6) { // Saturday
+      currentDate.setDate(currentDate.getDate() + (shiftAmount > 0 ? 2 : -1));
+    } else if (currentDate.getDay() === 0) { // Sunday
+      currentDate.setDate(currentDate.getDate() + (shiftAmount > 0 ? 1 : -2));
+    }
+
     dateInput.valueAsDate = currentDate;
     updateChart();
   }
 };
+
 
 function adjustTime(minutes) {
   const endTimeInput = document.getElementById('endTimeInput');
